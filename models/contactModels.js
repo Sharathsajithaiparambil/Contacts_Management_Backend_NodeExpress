@@ -19,6 +19,10 @@ const contactSchema = mangoose.Schema(
       type: String,
       required: [true, 'Please add a phone number'],
     },
+    photo: {
+      type: String,
+      required: false,
+    },
   },
   {
     timestamps: true,

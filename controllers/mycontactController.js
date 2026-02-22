@@ -13,10 +13,17 @@ const createContact = asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error('All fields are mandatory!');
     }
+    
+    let photoPath = null;
+    if (req.file) {
+        photoPath = `/uploads/photos/${req.file.filename}`;
+    }
+    
     const newContact = await contact.create({
         name,
         email,
         phone,
+        photo: photoPath,
         user_id: req.user.id
     });
     res.status(201).json(newContact);
@@ -32,9 +39,15 @@ const updateContact = asyncHandler(async (req, res) => {
         res.status(403);
         throw new Error('User not authorized to update this contact!');
     }
+    
+    const updateData = { ...req.body };
+    if (req.file) {
+        updateData.photo = `/uploads/photos/${req.file.filename}`;
+    }
+    
     const updatedContact = await contact.findByIdAndUpdate(
         req.params.id,
-        req.body,
+        updateData,
         {new: true}
     );
     res.status(200).json(updatedContact);
